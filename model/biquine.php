@@ -19,7 +19,7 @@ class Biquine
         $this->conn = Connection::getConnection();
     }
 
-    // Método para obter todos os biquínis
+    // Obter todos os biquínis
     public function getBiquines()
     {
         $sql = "SELECT * FROM produtos";
@@ -28,7 +28,17 @@ class Biquine
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Método para criar um novo biquíni
+    // Obter biquíni por ID
+    public function getById($id)
+    {
+        $sql = "SELECT * FROM produtos WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // Criar novo biquíni
     public function createBiquine()
     {
         $sql = "INSERT INTO produtos (nome, quantidade, preco) VALUES (:nome, :quantidade, :preco)";
@@ -38,14 +48,10 @@ class Biquine
         $stmt->bindParam(":quantidade", $this->quantidade, PDO::PARAM_INT);
         $stmt->bindParam(":preco", $this->preco, PDO::PARAM_STR);
 
-        if ($stmt->execute()) {
-            return true;
-        }
-
-        return false;
+        return $stmt->execute();
     }
 
-    // Método para editar um biquíni
+    // Atualizar biquíni
     public function updateBiquine()
     {
         $sql = "UPDATE produtos SET nome = :nome, quantidade = :quantidade, preco = :preco WHERE id = :id";
@@ -56,26 +62,15 @@ class Biquine
         $stmt->bindParam(":quantidade", $this->quantidade, PDO::PARAM_INT);
         $stmt->bindParam(":preco", $this->preco, PDO::PARAM_STR);
 
-        if ($stmt->execute()) {
-            return true;
-        }
-
-        return false;
+        return $stmt->execute();
     }
 
-    // Método para excluir um biquíni
+    // Excluir biquíni
     public function deleteBiquine()
     {
         $sql = "DELETE FROM produtos WHERE id = :id";
         $stmt = $this->conn->prepare($sql);
-
         $stmt->bindParam(":id", $this->id, PDO::PARAM_INT);
-
-        if ($stmt->execute()) {
-            return true;
-        }
-
-        return false;
+        return $stmt->execute();
     }
 }
-

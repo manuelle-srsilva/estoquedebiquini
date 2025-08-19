@@ -6,8 +6,22 @@ use Model\Biquine;
 
 class BiquineController
 {
-    public function getBiquines()
-    {
+    // Método para obter todos os biquínis ou um específico por ID
+public function getBiquines()
+{
+    $id = $_GET["id"] ?? null;
+
+    if ($id) {
+        $biquine = $this->getById($id);
+
+        if ($biquine) {
+            header("Content-Type: application/json", true, 200);
+            echo json_encode($biquine);
+        } else {
+            header("Content-Type: application/json", true, 404);
+            echo json_encode(["message" => "Biquíni não encontrado"]);
+        }
+    } else {
         $biquine = new Biquine();
         $biquines = $biquine->getBiquines();
 
@@ -19,7 +33,17 @@ class BiquineController
             echo json_encode(["message" => "Nenhum biquíni encontrado"]);
         }
     }
+}
 
+// Método para buscar biquíni por ID
+public function getById($id)
+{
+    $biquine = new Biquine();
+    return $biquine->getById($id);
+}
+
+
+    // Método para criar
     public function createBiquine()
     {
         $data = json_decode(file_get_contents("php://input"));
@@ -43,6 +67,7 @@ class BiquineController
         }
     }
 
+    // Método para atualizar
     public function updateBiquine()
     {
         $data = json_decode(file_get_contents("php://input"));
@@ -67,6 +92,7 @@ class BiquineController
         }
     }
 
+    // Método para excluir
     public function deleteBiquine()
     {
         $id = $_GET["id"] ?? null;
@@ -89,4 +115,3 @@ class BiquineController
     }
 }
 ?>
-
